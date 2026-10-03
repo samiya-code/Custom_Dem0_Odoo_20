@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_custom_demo_item_list" model="ir.ui.view">
+        <field name="name">custom.demo.item.list</field>
+        <field name="model">custom.demo.item</field>
+        <field name="arch" type="xml">
+            <list string="Service Tickets" decoration-danger="priority == 'high'" decoration-warning="priority == 'normal'" decoration-success="state == 'resolved'">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="assigned_to"/>
+                <field name="amount"/>
+                <field name="date_created"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_custom_demo_item_search" model="ir.ui.view">
+        <field name="name">custom.demo.item.search</field>
+        <field name="model">custom.demo.item</field>
+        <field name="arch" type="xml">
+            <search string="Search Tickets">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="contact_email"/>
+                <filter string="New" name="new" domain="[('state', '=', 'new')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Resolved" name="resolved" domain="[('state', '=', 'resolved')]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_name'}"/>
+                    <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to'}"/>
+                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_custom_demo_item_form" model="ir.ui.view">
+        <field name="name">custom.demo.item.form</field>
+        <field name="model">custom.demo.item</field>
+        <field name="arch" type="xml">
+            <form string="Service Ticket">
+                <header>
+                    <button name="action_assign" type="object" string="Assign" class="btn-primary" invisible="state != 'new'"/>
+                    <button name="action_resolve" type="object" string="Mark Resolved" class="btn-secondary" invisible="state == 'closed'"/>
+                    <button name="action_close" type="object" string="Close Ticket" class="btn-success" invisible="state == 'closed'"/>
+                    <button name="action_reopen" type="object" string="Reopen" class="btn-warning" invisible="state != 'closed'"/>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="customer_name"/>
+                            <field name="contact_email"/>
+                            <field name="phone"/>
+                        </group>
+                        <group>
+                            <field name="priority"/>
+                            <field name="assigned_to"/>
+                            <field name="amount"/>
+                            <field name="date_created"/>
+                            <field name="close_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Issue Details">
+                            <field name="description"/>
+                        </page>
+                        <page string="Resolution">
+                            <field name="solution"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>
